@@ -1,0 +1,10 @@
+shapefiles
+output/centroids
+output/cluster
+output/fortracc
+output/tracking
+data/radar_ALL
+.ipynb_checkpoints
+*.pyc
+*.idea
+.env
