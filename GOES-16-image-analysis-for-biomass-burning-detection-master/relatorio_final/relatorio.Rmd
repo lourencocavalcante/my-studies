@@ -1,0 +1,441 @@
+---
+title: \centering \LARGE Uso de imagens de satélites para detecção de queimadas nas áreas canavieiras de São Paulo
+subtitle: \centering Relatório final de atividades PIBIC 2019|2020, vigência 01/08/2019 - 31/09/2020
+author:
+  - '\normalsize Wesley R. da Silva Satelis'
+  - '\centering \normalsize \textbf{Orientação:} Jurandir Zullo Jr., Renata R. V. Gonçalves e Guilherme V. N. Ludwig'
+abstract: "Com o objetivo de propor um método de detecção de queimadas em regiões de cultivo de cana-de-açúcar em São Paulo a partir da análise de séries temporais de imagens de satélites meteorológicos, foram empregados métodos de extração de sinal nas séries, removendo efeitos atmosféricos, e métodos de pontos de mudança, discriminando intervalos de tempos em que são observadas mudanças em propriedades estatísticas. Foram estudadas séries de áreas onde se sabe que houve queima de vegetação e cultivo de cana, compreendendo o ano de 2019, empregando métodos precisos de detecção de pontos de mudança sob perspectivas Bayesianas e computacionalmente baratos. Por fim, os resultados mostraram-se satisfatórios quanto à detecção de mudanças causadas por queima de vegetação e apontam para a proposta de um sólido método de detecção com aplicação direta em imagens de satélites meteorológicos, que apresentam baixa resolução espacial e alta resolução temporal. Os resultados obtidos representam um grande avanço no emprego de dados do satélite GOES-16 no Centro de Pesquisas Meteorológicas e Climáticas Aplicadas à Agricultura da Unicamp.  \\par
+ \\textbf{Palavras-chave:} sensoriamento remoto, séries temporais, GOES-16, pontos de mudança, agricultura, protocolo ambiental, cana-de-açúcar"
+tags: [sensoriamento remoto, séries temporais, GOES-16, pontos de mudança, agricultura, protocolo ambiental, cana-de-açúcar]
+documentclass: article
+geometry: "left=2.3cm, right=2.3cm, top=2cm, bottom=2cm"
+output:
+  pdf_document:
+    number_sections: true
+    latex_engine: 'xelatex'
+bibliography: ["referencias.bib"]
+biblio-style: "plain"
+link-citations: true
+colorlinks: false
+lang: pt-BR
+fontsize: 11pt
+
+header-includes:
+- \usepackage{subcaption}
+- \usepackage{scrextend}
+- \usepackage{tikz}
+# - \usepackage{pgfplots}
+# - \usetikzlibrary{shapes.geometric, arrows}
+- \usepackage{caption}
+- \usepackage{float}
+# - \pgfplotsset{compat=1.16}
+# para kableExtra
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+- \usepackage{threeparttablex}
+- \usepackage[normalem]{ulem}
+- \usepackage{makecell}
+- \usepackage{float}
+- \floatplacement{figure}{H}
+
+
+
+nocite: |
+  "@gonccalves2012evi", "@gonccalves2012relaccao"
+---
+
+<!-- nocite: | -->
+  <!-- "@protocloagro", "@orbitainpe", "@conab", "@trmm", "@landsat", -->
+<!--   "@evibrasil", "@sugarcanesouth", "@ertsveg", "@aguiar2011remote", -->
+<!--   "@morettin2006analise", "@aminikhanghahi2017survey", "@mvc", -->
+<!--   "@killick2012", "@garcia1991mapping", "@killick2012optimal" -->
+
+\renewcommand{\figurename}{Figura}
+\renewcommand{\tablename}{Tabela}
+\captionsetup[figure]{font=small}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, 
+                      fig.align='center', fig.pos = "H", fig.height=2)
+library(gridExtra)
+library(kableExtra)
+library(geobr)
+library(tmap)
+load("final.RData")
+source("../funcoes.R")
+theme_set(theme_bw(base_size = 10))
+options(knitr.table.format="latex")
+```
+
+# Introdução
+
+A cultura da cana-de-açúcar possui função cada vez mais estratégica na economia do país devido ao interesse em conciliar preocupações relacionadas ao meio ambiente e a utilização de combustíveis fósseis, que considera o balanço do lançamento de carbono na atmosfera e suas contribuições no aquecimento global.
+
+Com propósito de reduzir a emissão de gases de efeito estufa (GEEs) na atmosfera, vem ocorrendo a eliminação de emprego do fogo para despalha da cana-de-açúcar, nas lavouras do estado de São Paulo. A mecanização da colheita sem queima prévia evita a emissão de gases de efeito estufa e beneficia o solo, pois deixa sobre ele a palha que antes era queimada e o protege contra erosão, além de contribuir para o aumento de fertilidade e teor de matéria orgânica [@conab].
+
+O mapeamento e monitoramento das lavouras de cana-de-açúcar, com e sem pré-queima da palha, torna-se importante para avaliar a eficácia do protocolo de intenções assinado em junho de 2007 pela Secretaria do Meio Ambiente do Estado de São Paulo (SMA-SP) e a União da Indústria de Cana-de-Açúcar (UNICA).
+
+@protocloagro e @orbitainpe afirmam que técnicas de análise espacial de imagens de satélites são essenciais para o mapeamento e monitoramento da colheita da cana-de-açúcar com queima da palha. @rudorff2010studies e Gonçalves et al. (2012a e 2012b) confirmaram que imagens de satélites são eficientes para auxiliar a avaliação de características importantes do cultivo da cana-de-açúcar, proporcionando resultados relevantes para o debate sobre a produção sustentável de etanol. @sugarcanesouth, avaliando a precisão do mapeamento temático da cana-de-açúcar por meio de imagens de satélites, chegaram a estimativas precisas das áreas de cana-de-açúcar para fins de estatísticas agrícolas empregadas no monitoramento da expansão da cultura no país.
+
+Este projeto de pesquisa utilizou imagens do satélite meteorológico GOES-16 referentes ao estado de São Paulo, empregando técnicas de análise de pontos de mudança em séries temporais.
+
+As áreas de plantio foram modeladas como séries temporais espacialmente dependentes entre si, por um processo de média móvel (ARMA) [uma introdução recente é @morettin2006analise], incluindo um componente de pontos de mudança [@aminikhanghahi2017survey]. O interesse principal foi identificar quantos pontos de mudança foram observados, em quais momentos e qual a mudança resultante e sugerir um método de detecção de áreas com queima de biomassa referente à cana-de-açúcar.
+
+# Objetivos
+
+## Objetivo geral
+
+O projeto teve como objetivo geral, monitorar a colheita de cana-de-açúcar na safra 2019/2020, por meio de imagens do satélite GOES-16, quantificando as áreas colhidas com e sem queima.
+
+## Objetivos específicos
+
+Os objetivos específicos foram: i) Analisar a variação dos valores do NDVI da cana-de-açúcar no estado de São Paulo no período de colheita da cultura; ii) Selecionar as áreas colhidas de cana-de-açúcar e verificar se houve ou não colheita por queima; iii) Quantificar a área colhida de cana-de-açúcar por queima e não queima.
+
+# Material e métodos
+
+## Índices de vegetação e queimada
+
+O espectro eletromagnético do GOES-16 é dividido em 16 bandas, com comprimentos de onda classificados entre visível e infravermelho próximo, médio e termal. Neste relatório, as bandas foram denotadas por $\rho$.
+
+Foram calculados índices de vegetação e queimada a fim de acompanhar a cultura da cana-de-açúcar e avaliar áreas onde houve pré-queima, resultando em uma imagem completa do estado de São Paulo a cada banda recebida do satélite. Para tal, foi utilizado o Índice de Vegetação por Diferença Normalizada (NDVI), definido por @rouse1974monitoring e calculado por
+
+\begin{equation} 
+  NDVI=\frac{\rho_{III} - \rho_{II}}{\rho_{III} + \rho_{II}},
+\end{equation} 
+
+<!-- $$ NDVI=\frac{\rho_{III} - \rho_{II}}{\rho_{III} + \rho_{II}}, $$ -->
+
+em que $\rho_{III}$ é o fator de refletância no infravermelho próximo $(0,86 \mu m)$ e $\rho_{II}$ no vermelho $(0,64 \mu m)$. Os valores no NDVI variam entre -1,0 e 1,0, sendo maior quanto maior for a diferença entre o fator de refletância no infravermelho próximo e no vermelho. Valores próximos a zero correspondem a superfícies sem vegetação.
+
+O Índice de Queima Normalizada (NBR) [@garcia1991mapping] foi utilizado na avaliação de áreas de queimadas, uma vez que ele evidencia cicatrizes em áreas de vegetação, ou seja áreas de vegetação onde houve queima de biomassa. O NBR é calculado por
+
+\begin{equation} 
+  NBR=\frac{\rho_{III} - \rho_{VI}}{\rho_{III} + \rho_{VI}},
+\end{equation} 
+
+<!-- $$ NBR=\frac{\rho_{III} - \rho_{VI}}{\rho_{III} + \rho_{VI}}, $$ -->
+
+em que $\rho_{VI}$ é o fator de refletância no infravermelho de onda curta $(2,24 \mu m)$ e $\rho_{III}$ é o mesmo utilizado no cálculo de NDVI. Valores negativos ou relativamente próximos a zero correspondem a áreas com vegetação queimada.
+
+## Extração de dados e georeferenciamento
+<!-- Vale ressaltar que a resolução espacial não se mantém em todas as faixas, por isso foi empregada a menor resolução capaz de abranger todas as faixas e evitar distorções nos índices. -->
+
+Em 2018, com recursos da Financiadora de Estudos e Projetos (Finep), o Centro de Pesquisas Meteorológicas e Climáticas Aplicadas à Agricultura (CEPAGRI) adquiriu e instalou um sistema de recepção e processamento de imagens do satélite meteorológico GOES-16. O sistema possui um software específico (Protheus) para o cálculo de índices a partir de diferentes faixas espectrais. Entretanto, buscando maior controle sobre a qualidade, os cálculos foram feitos diretamente com códigos implementados na linguagem de computação estatística R. Assim, optou-se por utilizar o software do sistema somente para recorte da área de interesse e seleção das faixas espectrais, minimizando o tamanho em disco e, consequentemente, o tempo de processamento.
+
+As imagens recebidas abrangem todo o ocidente e o pré processamento tem o objetivo de extrair somente a região de estudo. O software do sistema de recepção retorna uma matriz para cada banda espectral, compreendendo todo o estado de São Paulo e com resolução espacial de aproximandamente 500 m por pixel. 
+
+```{r}
+focos %>% 
+  dplyr::distinct(municipio, .keep_all = TRUE) %>% 
+  dplyr::select(datahora, latitude, longitude, municipio) %>% 
+  kableExtra::kable(col.names=c("Momento de queima", "Latitude", "Longitude", "Município"),
+      booktabs=TRUE, linesep="", digits=3, align='cccl',
+      caption="\\label{conj_teste}Conjunto de testes utilizado na construção do modelo de detecção de queimadas",
+      format.args = list(decimal.mark = ',', big.mark = "'")) %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+```
+
+As localizações das culturas canavieiras utilizadas neste projeto provêm de um estudo feito por @aguiar2011remote no Instituto Nacional de Pesquisas Espaciais (INPE), que também teve o objetivo de monitorar o cumprimento do protocolo ambiental no cultivo de cana-de-açúcar no estado de São Paulo. Além destas, foram extraídas localizações de focos de incêndio reportadas pelo programa de monitoramento de queimadas, também desenvolvido pelo INPE [@inpe], selecionando municípios com plantações de tamanho considerável de cana. As técnicas discutidas nas seções a seguir foram aplicadas nestes pontos, a fim de criar um método de classificação de queimas em vegetação. Este conjunto de dados foi denominado conjunto de testes e está discriminado na Tabela \ref{conj_teste}.
+
+O geoprocessamento dos dados tomou tempo considerável deste trabalho, sendo desenvolvido em servidores do Cepagri e clusters de alta performance computacional disponibilizados pelo Instituto de Matemática, Estatística e Computação Científica (IMECC).
+
+## Redução de efeitos atmosféricos
+
+Técnicas de redução de efeitos atmosféricos foram consideradas neste trabalho como métodos de processamento de sinais em séries temporais e objetivaram minimizar ruídos causados por fatores externos, como contaminações por nuvens, ângulos de luz solar, efeitos de sombra, efeitos de aerosol e vapor de água e refletância direcional.
+
+O procedimento de Composição de Máximo Valor (MVC) [@holben1986characteristics] avalia valores em intervalos de tempo predeterminados e mantém os pixels com maior valor. Por fim, tem-se uma imagem resultante da combinação dos valores máximos de todas as imagens na janela de tempo fixado. Neste trabalho, essa técnica foi aplicada às séries temporais com observações entre 9h-11h e 13h-15h UTC−3 de cada dia. A escolha dos intervalos se dá pelo fato da qualidade do resultado depender fortemente da quantidade de ruído presente no intervalo e ambos os índices apresentarem menor contaminção em horários ao redor do meio-dia. Vale ressaltar que esta técnica diminui consideravelmente a resolução temporal dos dados, indo de uma observação a cada 15 minutos para duas observações por dia e, consequentemente, reduz a possibilidade de detectar mudanças de curto prazo.
+
+<!-- **(referencias para a escolha de horarios?)** -->
+
+Visando manter a resolução temporal, foi aplicado um filtro de mediana adaptativo definido por @medianfilter, em que o tamanho da janela é adaptado para os dados da janela atual por um teste de ajuste do sinal estimado mais recente, mantendo a mediana de cada janela móvel.
+
+<!-- Procedure for robust online extraction of low frequency components (thesignal) from a univariatetime series by a moving window technique with adaptive window width selection (ADaptive OnlineREpeated median FILTER) -->
+
+<!-- Theadore.filterworks by applying Repeated Median (RM) regression (Siegel, 1982) to a mov-ing time window with a length varying betweenmin.widthandmax.width.For each point in time, the window width is adapted to the current data situation by a goodness offit test for the most recent signal level estimation. The test uses the absolute value of the sum of theRM residuals in the subset specified byp.test. The critical value for the test decision correspondsto a slightly modified 0.95-quantile of the distribution of the test statistic and is stored in the datasetcritvals.A more detailed description of the filter can be found in Schettlinger, Fried, Gather (2010) -->
+
+O filtro é construído localmente com base no modelo
+
+\begin{equation} 
+  Y_t = Y_{t-j} + (t-j)\beta + \epsilon_{j}, j = 1, 2, ..., n_t,
+\end{equation} 
+
+<!-- $$Y_t = Y_{t-j} + (t-j)\beta + \epsilon_{j}, j = 1, 2, ..., n_t,$$ -->
+
+isto é, em que as últimas $n_t$ observações em um instante de tempo arbitrário $t$ são incrementos lineares de $\beta$ unidades sobre valores anteriores, para cada uma unidade de tempo.
+
+Seja uma série definida em $Y_1, Y_2, ..., Y_t.$ No $t$-ésimo instante, queremos encontrar o valor filtrado em $Y_t$ dado por $Y_t^{*}$. Para um $n_t,$ os dados que irão compor o valor filtrado são $Y_t, Y_{t - 1}, ..., Y_{t - n_{t + 1}}$. Obtemos o estimador $\hat{\beta} = Med_j\{Y_{t-j}, Y_{t-j-1}\}$, o incremento mediano sobre $Y$ por uma unidade de tempo, para a janela de $n_t$ observações. Assumimos que, dentro da janela, a série está incrementando $\beta$ unidades por uma unidade de tempo e $\hat{\beta}$ é um estimador robusto de $\beta$.
+
+Como a série assume um efeito linear local, a mediana dos incrementos lineares das últimas $n_t$ observações é uma previsão robusta do sinal de $Y_t$, $Y_t^{*} = Med_j\{Y_{t - j - 1} + (n-j)\beta\}$. A escolha de $n_t$ é adaptativa e está descrita em @medianfilter.
+
+<!-- É um pouco mais complexo do que eu pensei que era (quando falei de mediana móvel) mas acho que conseguimos explicar. Eu não cheguei na parte sobre como eles encontram n_t mas acho que é usando o BIC e o algoritmo da Figura 2 né? 
+Guilherme: eu mexi pouquinha coisa, está legal assim; colei uma referencia pro Killick pra evitar falar como escolhe n_t -->
+
+A técnica foi aplicada utilizando o pacote implementado por @robfilter, e foi comparada ao MVC. 
+
+<!-- Guilherme: Mexi um pouquinho aqui, foi o que vc quis dizer? -->
+
+## Pontos de mudança
+
+A identificação de pontos de mudança nas séries temporais de NDVI e NBR tem o objetivo específico de discriminar intervalos em que ocorrem mudanças nas propriedades estatísticas, $\mu$ e $\sigma$, causadas pela pré-queima da palha de cana-de-açúcar. 
+
+Seja $\{Y_{1, t}\}$ a série correspondente a um pixel do conjunto de testes. Um ponto de mudança ocorre quando existe um tempo $t_{\tau}$ $\epsilon$ $\{0, ..., t-1\}$ em que as propriedades estatísticas de $\{y_{1, 0}, ..., y_{1, \tau}\}$ e $\{y_{1, \tau+1}, ..., y_{1, t}\}$ se diferem de alguma forma. A detecção de um ponto de mudança pode ser encarada como um teste de hipóteses. A hipótese nula, $H_0$, corresponde a nenhum ponto de mudança $(m=0)$ e a hipótese alternativa, $H_1$, a um ponto de mudança $(m=1)$. Se rejeitamos a hipótese nula, o conjunto de dados é segmentado no ponto de mudança, e iteramos o procedimento, corrigindo os testes para evitar descobertas falsas. <!-- aumentei um pouquino -->
+
+A estatística associada ao teste de hipóteses proposto é de razão de verossimilhanças e faz uso da função de log-verossimilhança sob ambas hipóteses, $H_0$ e $H_1$. Sob a hipótese alternativa, considere um modelo com um ponto de mudança em $t_{\tau}$, em que $t_{\tau} \in {1, 2, ..., n-1}$. Assim, a função de log-verossimilhança é dada por,
+
+\begin{equation} 
+  ML\left(\tau_{1}\right)=\log p\left(y_{1: \tau_{1}} \mid \hat{\theta}_{1}\right)+\log p\left(y_{\left(\tau_{1}+1\right): n} \mid \hat{\theta}_{2}\right).
+\end{equation} 
+
+<!-- $$ML\left(\tau_{1}\right)=\log p\left(y_{1: \tau_{1}} \mid \hat{\theta}_{1}\right)+\log p\left(y_{\left(\tau_{1}+1\right): n} \mid \hat{\theta}_{2}\right).$$ -->
+
+Levando em conta a natureza discreta da localização de pontos de mudança, o valor log-verossimilhança sob a hipótese alternativa é simplesmente $\max_{\tau_{1}}ML\left(\tau_{1}\right)$, em que o valor máximo é tomado sobre todos os pontos de mudança possíveis. Assim, a estatística do teste é,
+
+\begin{equation} 
+  \lambda=2\left[\max _{\tau_{1}} M L\left(\tau_{1}\right)-\log p\left(y_{1: n} \mid \hat{\theta}\right)\right].
+\end{equation} 
+
+<!-- $$\lambda=2\left[\max _{\tau_{1}} M L\left(\tau_{1}\right)-\log p\left(y_{1: n} \mid \hat{\theta}\right)\right].$$ -->
+
+O teste envolve a escolha de um limite, $c$, tal que a hipótese nula é rejeitada se $\lambda > c$. Se rejeitamos a hipótese nula, ou seja, detectamos um ponto de mudança, então estimamos sua posição como $\hat{\tau_{1}}$.
+
+O interesse principal é identificar quantos pontos de mudança foram observados no histórico ($m$), em quais momentos ($t_1, t_2, \ldots, t_m$) e qual a mudança resultante ($\alpha_1, \ldots, \alpha_m$) [@killick2012optimal]. A abordagem mais comum na detecção de múltiplos pontos de mudança na literatura é minimizando, 
+
+\begin{equation} 
+  \sum_{i=1}^{m+1}\left[\mathcal{C}\left(y_{\left(\tau_{i-1}+1\right): \tau_{i}}\right)\right]+\beta f(m).
+\end{equation} 
+
+<!-- $$\sum_{i=1}^{m+1}\left[\mathcal{C}\left(y_{\left(\tau_{i-1}+1\right): \tau_{i}}\right)\right]+\beta f(m) (\#eq:binom)$$ -->
+
+em que, $\mathcal{C}$ é a função de custo para um segmento, por exemplo a função de log-verossimilhança e $\beta f(m)$ uma função penalidade para prevenir sobreajustes, uma versão para múltiplos pontos de mudança do limite $c$ citado anteriormente. Na prática, a escolha mais comum é uma que seja linear no número de pontos de mudança, isto é, $\beta f(m) = \beta m$. Temos como exemplos comuns as penalidades *Akaike's information crtierion* (AIC), em que $\beta = 2p$ e *Bayesian information criterion* (BIC), em que $\beta = plog(n)$ com p sendo o número de parâmentros adicionais introduzidos pela adição de um ponto de mudança.
+
+O método de busca de pontos de mudança aplicado foi o de segmentação binária, empregado utilizando o pacote descrito por @killick2014changepoint. Em suma, a segmentação binária torna qualquer método para um ponto de mudança em um de multiplos pontos, repetindo-se iterativamente em diferentes subconjuntos da série.
+
+Foram estimados pontos de mudança em média, $\mu$, e variância, $\sigma^2$, conjuntamente e apesar de terem sido estimadas mudanças em variância, estas serão referidas no decorrer deste texto na forma de desvio padrão $\sqrt{\sigma^2}$ e denotadas por $\sigma$.
+
+# Resultados
+
+Os índices de vegetação por diferença normalizada e de queima normalizada calculados para todo o território de São Paulo estão representados nas Figuras \ref{indice1} e \ref{indice2}. Todas as imagens recebidas passaram pelo mesmo procedimento, possibilitando a obtenção das séries de qualquer pixel contido nas imagens.
+
+```{r}
+sao_paulo <- geobr::read_state(code_state="SP", showProgress=FALSE, year=2018)
+sao_paulo <- st_transform(sao_paulo, crs=crs(ndvi_rast, asText=TRUE))
+layout <- tm_layout(legend.title.size=0.7, 
+            legend.text.size=0.5, 
+            title.size=0.8, 
+            # title.position=c(0.55, "bottom"),
+            legend.outside=T,
+            # legend.outside.position="bottom",
+            legend.hist.width = 1,
+            # legend.position=c(0.5, 0.55), 
+            title.snap.to.legend=FALSE,
+            legend.frame=FALSE, 
+            frame=FALSE, 
+            inner.margins = 0, 
+            # outer.margins = 0, 
+            legend.height=-1)
+
+# a <- tm_shape(ndvi_rast) +
+#   tm_raster(midpoint=0, palette=viridis(10000), style="cont", title="", legend.is.portrait=FALSE) +
+#   tm_shape(sao_paulo) + tm_borders(col="white") +
+#   tm_graticules(col="white", lwd=0.2, alpha=0.8) +
+#   layout
+# 
+# b <- tm_shape(nbr_rast) +
+#   tm_raster(midpoint=0, palette=inferno(10000), style="cont", title="", legend.is.portrait=FALSE) +
+#   tm_shape(sao_paulo) + tm_borders(col="white") +
+#   tm_graticules(col="white", lwd=0.2, alpha=0.8) +
+#   layout
+
+# tmap_arrange(list(a, b), ncol=2, inner.margins=0, asp=NA)
+# knitr::include_graphics("mapas_indices_ic.png")
+```
+
+```{r, fig.height=4, fig.cap="\\label{indice1} Índice de Vegetação por Diferença Normalizada (NDVI), georeferenciado pelas fronteiras do estado de São Paulo. Imagem de abril de 2019 às 13:00 UTC-3."}
+tm_shape(ndvi_rast) +
+  tm_raster(midpoint=0, palette=viridis(10000), style="cont", legend.is.portrait=TRUE, 
+            breaks = seq(-1, 1, 0.1), legend.reverse = TRUE, title = "NDVI") +
+  tm_shape(sao_paulo) + tm_borders(col="white") +
+  tm_graticules(col="white", lwd=0.05, alpha=0.8) +
+  layout
+```
+
+```{r, fig.height=4, fig.cap="\\label{indice2} Índice de Queima Normalizada (NBR), georeferenciado pelas fronteiras do estado de São Paulo. Imagem de abril de 2019 às 13:00 UTC-3."}
+tm_shape(nbr_rast) +
+  # tm_fill() + 
+  tm_raster(midpoint=0, palette=inferno(10000), style="cont", legend.is.portrait=TRUE, 
+            breaks = seq(-1, 1, 0.1), legend.reverse = TRUE, title = "NBR") +
+  tm_shape(sao_paulo) + tm_borders(col="white") +
+  tm_graticules(col="white", lwd=0.05, alpha=0.8) +
+  layout
+```
+
+Nas Figuras \ref{mvc} e \ref{med}, as linhas pretas mostram os resultados das reduções de ruídos pelos métodos de composição de valor máximo e pelo filtro de mediana com janela móvel adaptativa, respectivamente. Como esperado, ambos estão dentro do intervalo teórico de (-1,0 e 1,0).
+
+A fidelidade do método de redução de ruído pelo filtro de médiana mostrou-se eficiente, uma vez que se assemelha ao método mais fiel, de composição por valor máximo, cumprindo com o objetivo de manter a resolução temporal original dos dados sem perda de fidelidade.
+
+Os segmentos em vermelho nas Figuras \ref{mvc} e \ref{med} representam os intervalos em que as médias e desvios padrões se diferem, ou seja, intervalos dos pontos de mudança detectados. A linha tracejada em laranja é momento em que a queimada foi detectada pelo sistema de monitoramento de queimadas do INPE.
+
+Nas Tabelas \ref{ndvi_mvc} e \ref{nbr_mvc} estão as estimativas das médias e desvios padrões, para cada segmento de mudança das séries resultantes por composição de valor máximo, bem como as datas e horas que formam os intervalos em que foram detectadas. Analogamente, as Tabelas \ref{ndvi_med} e \ref{nbr_med} trazem a mesma informação para as séries resultantes do filtro de mediana com janela móvel adaptativa.
+
+```{r}
+cpt_frame <- dplyr::filter(queima_max, index=="nbr", plant==15, pixel=="pixel_05") %>% 
+  dplyr::rename(valor=max)
+cpt_frame <- focos %>%
+  dplyr::rename(data_queima=datahora) %>% 
+  dplyr::right_join(cpt_frame)
+
+mv.max_nbr <- changepoint::cpt.meanvar(cpt_frame$valor, method="BinSeg", Q=5)
+plt.cpt_nbr <- plot_cpt(mv.max_nbr, cpt_frame)
+a <- plt.cpt_nbr[[1]] + 
+  ylim(-.1, .8) +
+  geom_vline(xintercept=cpt_frame$data_queima, linetype="dashed", col="#d48300")
+
+cpt_frame <- dplyr::filter(queima_max, index=="ndvi", plant==15, pixel=="pixel_05") %>% 
+  dplyr::rename(valor=max)
+
+cpt_frame <- focos %>%
+  dplyr::rename(data_queima=datahora) %>% 
+  dplyr::right_join(cpt_frame)
+
+mv.max_ndvi <- changepoint::cpt.meanvar(cpt_frame$valor, method="BinSeg", Q=5)
+plt.cpt_ndvi <- plot_cpt(mv.max_ndvi, cpt_frame)
+b <- plt.cpt_ndvi[[1]] + 
+  ylim(-.1, .8) +
+  geom_vline(xintercept=cpt_frame$data_queima, linetype="dashed", col="#d48300")
+
+```
+
+```{r, fig.align='center'}
+datas_ndvi <- dplyr::distinct(plt.cpt_ndvi[[2]], x_data, xend_data)
+param_ndvi <- cbind(as_tibble(coef(mv.max_ndvi)), datas_ndvi) %>%
+  dplyr::select(x_data, xend_data, mean, variance) %>% 
+  dplyr::mutate(variance = sqrt(variance)) %>% 
+  dplyr::mutate(x_data=x_data-dhours(3), xend_data=xend_data-dhours(3))
+
+
+kable(param_ndvi, col.names=c("Momento de início", "Momento de fim", "Média", "Desvio padrão"),
+      booktabs=TRUE, linesep="", digits=3, align='c',
+      caption="\\label{ndvi_mvc}Estimativas de pontos de mudança para o índice de vegetação NDVI tratado pela composição de valor máximo do município de Sertãozinho.",
+      format.args = list(decimal.mark = ',', big.mark = "'")) %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+
+datas_nbr <- dplyr::distinct(plt.cpt_nbr[[2]], x_data, xend_data)
+param_nbr <- cbind(as_tibble(coef(mv.max_nbr)), datas_nbr) %>% 
+  dplyr::select(x_data, xend_data, mean, variance) %>% 
+  dplyr::mutate(variance = sqrt(variance))  %>% 
+  dplyr::mutate(x_data=x_data-dhours(3), xend_data=xend_data-dhours(3))
+
+kable(param_nbr, col.names=c("Momento de início", "Momento de fim", "Média", "Desvio padrão"),
+      booktabs=TRUE, linesep="", digits=3, align='c',
+      caption="\\label{nbr_mvc}Estimativas de pontos de mudança para o índice de queimada NBR tratado pela composição de valor máximo do município de Sertãozinho.",
+      format.args = list(decimal.mark = ',', big.mark = "'")) %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+```
+
+```{r, fig.cap="\\label{mvc} Em vermelho, segmentos de mudança em média e desvio padrão detectados na série resultante da composição por valor máximo (MVC) de um pixel pertencente ao conjunto de testes do município de Sertãozinho. NDVI à esquerda e NBR à direita."}
+gridExtra::grid.arrange(grobs=list(b, a), ncol=2)
+```
+
+
+```{r}
+med_cpt <- dplyr::filter(med, index=="ndvi", plant==15) %>% 
+  dplyr::mutate(data=data_hora) %>%
+  dplyr::mutate(valor=comb) %>% 
+  dplyr::select(-c(comb, data_hora))
+
+mv.med_ndvi <-changepoint:: cpt.meanvar(med_cpt$valor, method="BinSeg", Q=5)
+plt.cpt_ndvi <- plot_cpt(cpt_obj=mv.med_ndvi, cpt_frame=med_cpt)
+a <- plt.cpt_ndvi[[1]] + 
+  ylim(-0.1, 0.85) +
+  geom_vline(xintercept=med_cpt$data_queima, linetype="dashed", col="#ff7300")
+
+med_cpt <- dplyr::filter(med, index=="nbr", plant==15) %>% 
+  dplyr::mutate(data=data_hora) %>% 
+  dplyr::mutate(valor=comb) %>% 
+  dplyr::select(-c(comb, data_hora))
+
+mv.med_nbr <- changepoint::cpt.meanvar(med_cpt$valor, method="BinSeg", Q=5)
+plt.cpt_nbr <- plot_cpt(cpt_obj=mv.med_nbr, cpt_frame=med_cpt)
+b <- plt.cpt_nbr[[1]] + 
+  ylim(-0.1, 0.85) +
+  geom_vline(xintercept=med_cpt$data_queima, linetype="dashed", col="#ff7300")
+```
+
+```{r, fig.align='center'}
+datas_ndvi <- dplyr::distinct(plt.cpt_ndvi[[2]], x_data, xend_data)
+param_ndvi <- cbind(as_tibble(coef(mv.med_ndvi)), datas_ndvi) %>%
+  dplyr::select(x_data, xend_data, mean, variance) %>% 
+  dplyr::mutate(variance = sqrt(variance)) %>% 
+  dplyr::mutate(x_data=x_data-dhours(3), xend_data=xend_data-dhours(3))
+
+kable(param_ndvi, col.names=c("Momento de início", "Momento de fim", "Média", "Desvio padrão"),
+      booktabs=TRUE, linesep="", digits=3, align='c',
+      caption="\\label{ndvi_med}Estimativas de pontos de mudança para o índice de vegetação NDVI tratado pelo filtro de mediana móvel do município de Sertãozinho.",
+      format.args = list(decimal.mark = ',', big.mark = "'")) %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+
+datas_nbr <- dplyr::distinct(plt.cpt_nbr[[2]], x_data, xend_data)
+param_nbr <- cbind(as_tibble(coef(mv.med_nbr)), datas_nbr) %>% 
+  dplyr::select(x_data, xend_data, mean, variance) %>% 
+  dplyr::mutate(variance = sqrt(variance)) %>% 
+  dplyr::mutate(x_data=x_data-dhours(3), xend_data=xend_data-dhours(3))
+
+kable(param_nbr, col.names=c("Momento de início", "Momento de fim", "Média", "Desvio padrão"),
+      booktabs=TRUE, linesep="", digits=3, align='c',
+      caption="\\label{nbr_med}Estimativas de pontos de mudança para o Índice de queimada NBR tratado pelo filtro de mediana móvel do município de Sertãozinho.",
+      format.args = list(decimal.mark = ',', big.mark = "'")) %>% 
+  kableExtra::kable_styling(latex_options = "HOLD_position")
+```
+
+```{r, fig.cap="\\label{med} Em vermelho, segmentos de mudança em média e desvio padrão detectados na série resultante do filtro por mediana de um pixel pertencente ao conjunto de testes do município de Sertãozinho. NDVI à esquerda e NBR à direita."}
+
+gridExtra::grid.arrange(grobs=list(a, b), ncol=2)
+```
+
+São apresentados em anexo os gráficos para as cidades de Piracicaba, Agudos, Ribeirão Preto, Limeira, São Simão, Jaboticabal e São José do Rio Preto.
+
+# Discussão
+
+O Índice de Queima Normalizada (NBR) mostrou-se mais sensível a queimas de vegetação, apresentando menor variabilidade na ausência de queimadas e quedas bruscas em caso contrário. O Índice de Vegetação por Diferença Normalizada (NDVI) apresentou comportamento condizente com o esperado em períodos de cultivo e queima de cana-de-açúcar, mantendo valores próximos a zero e próximos a 1 respectivamente. Estes resultados tornam imprescindível a combinação dos dois índices na proposta de um método de detecção de queimadas.
+
+O método de busca de pontos de mudanças utilizado, por segmentação binária, apresentou resultados que merecem maior atenção. Alguns pontos de mudança detectados dividem a série em segmentos relativamente pequenos e não deveriam ser classificados como pontos de mudança. @killick2012optimal sugerem métodos exatos com custo computacional linear e o emprego e aperfeiçoamento destes métodos quando aplicados às séries apresentadas neste trabalho podem trazer resultados mais tangíveis, levando a meios mais robustos de detecção de mudanças em propriedades estatísticas, tais como apresentadas anteriormente.
+
+Os resultados obtidos foram satisfatórios no que diz respeito à detecção de mudanças em média e desvio padrão, em ambos os índices e em ambos métodos de redução de efeitos atmosféricos, filtro por composição de valor máximo e filtro por mediana móvel adaptativa. As técnicas aplicadas, certamente, podem ser empregadas no monitoramento de queimadas em áreas de cultivo de cana-de-açúcar e merecem ser estudadas e aperfeiçoadas.
+
+Existe grande interesse em explorar as relações de dependência espacial entre as séries de pixels vizinhos com o objetivo de aperfeiçoar o método, delimitar grandes áreas, diminuir descobertas falsas e trazer maior consistência aos resultados. Os pontos de aperfeiçoamento levantados aqui continuarão a ser implantados e explorados, com a finalidade de gerar material para publicação.
+
+Este trabalho gerou ferramentas de processamento de imagens que fomentarão outros projetos de pesquisa no Centro de Pesquisas Meteorológicas e Climáticas Aplicadas à Agricultura - CEPAGRI/UNICAMP, onde foi desenvolvido. Os códigos implementados estão disponíveis em https://github.com/wesleysatelis/GOES-16-image-analysis-for-biomass-burning-detection e são guardados pela Licença Pública Geral GNU, podendo ser alterados e redistribuídos.
+
+<!-- # Apoio -->
+
+<!-- Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq). -->
+
+<!-- # Agradecimentos -->
+
+\newpage
+
+# Anexos
+
+```{r, message=FALSE, results='hide', warning=FALSE}
+muns <- unique(med$municipio)
+plot_locs(muns[1])
+plot_locs(muns[2])
+plot_locs(muns[3])
+plot_locs(muns[5])
+plot_locs(muns[6])
+plot_locs(muns[7])
+plot_locs(muns[8])
+```
+
+
+
+\newpage
+# Referências

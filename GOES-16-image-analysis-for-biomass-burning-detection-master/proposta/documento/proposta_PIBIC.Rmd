@@ -1,0 +1,164 @@
+---
+title: Uso de imagens de satélites para detecção de queimadas nas áreas canavieiras de São Paulo
+author:
+- 'Orientador: Dr. Jurandir Zullo Junior'
+- 'Coorientadores: Dra. Renata Ribeiro do Valle Gonçalves'
+- '                Prof. Dr. Guilherme V. Nunes Ludwig'
+- 'Candidato: Wesley Ricardo da Silva Satelis'
+fontsize: 12pt
+output:
+  pdf_document: default
+
+bibliography: ["references.bib"]
+# biblio-style: "plain"
+link-citations: false
+nocite: |
+    '@noaa', '@sugarcanesouth', '@conab', '@trmm', '@evibrasil', '@cressie1993statistics'
+    '@orbitainpe', '@protocloagro', '@ertsveg', '@landsat', '@morettin2006analise'
+    '@aminikhanghahi2017survey', '@killick2014changepoint', '@cressie2011statistics',
+
+# @gamerman2010dynamic @besag1974spatial
+
+header-includes:
+- \usepackage[fontsize=12pt]{scrextend}
+- \usepackage{tikz}
+- \usepackage{pgfplots}
+- \usetikzlibrary{shapes.geometric, arrows}
+- \usepackage{caption}
+- \usepackage{float}
+# - \usepackage[backend=bibtex]{biblatex}
+# - \usepackage[portuguese]{babel}
+- \pgfplotsset{compat=1.16}
+- \usepackage[style=authoryear-icomp,maxbibnames=9,maxcitenames=2,backend=biber]{biblatex}
+---
+
+\nocite{*}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\tablename}{Tabela}
+\captionsetup[figure]{font=small}
+<!-- \captionsetup[table]{font=small} -->
+
+
+Projeto submetido ao PIBIC (Programa Institucional de Bolsas de Iniciação Científica), processo seletivo 2019 (Edital IC Nº 01/2019).
+
+\begin{center}
+\textbf{Resumo}
+\end{center}
+Os dados de sensoriamento remoto estão mais acessíveis hoje em dia e existem tecnologias adequadas para receber, distribuir, tratar e processar longas séries de imagens de satélites (STIS), que podem ser utilizadas para melhorar métodos tradicionais de monitoramento e previsão de safras agrícolas. No Brasil, a cana-de-açúcar é cultivada em grandes campos e é a principal cultura agrícola utilizada para produzir etanol, biocombustível com potenciais benefícios para o meio ambiente como uma maneira de mitigar emissões de gases de efeito estufa.  A intensificação da colheita mecanizada de cana-de-açúcar será inevitável, devido à evolução tecnológica, o que possibilitará um maior ganho ambiental e resultará, principalmente, em menor emissão de poluentes atmosféricos e na melhoria da qualidade do solo. Desde o início do Protocolo Agroambiental do Setor Sucroenergético em São Paulo, a colheita mecanizada ocorre e houve uma redução de mais de 90% da área de queima de cana-de-açúcar autorizada. Nesse contexto, o objetivo do projeto é monitorar a colheita de cana-de-açúcar da safra 2019/2020, por meio de imagens do satélite GOES-16, quantificando as áreas colhidas com queima e sem queima de cana-de-açúcar. O banco de imagens do satélite GOES-16 do Cepagri será utilizado para monitorar as áreas de plantio de cana-de-açúcar do estado de São Paulo e verificar as áreas de colheita com queima da cultura. A análise dos dados será feita utilizando imagens de NDVI diárias e imagens de focos de incêndios das áreas de plantio da cultura, no período de abril a setembro de 2019, que corresponde ao período de colheita. Os dados de satélite serão modelados como séries temporais nas regiões de plantio a cada hora, especialmente dependentes entre si. Esses modelos levarão em conta os valores de intensidade do NDVI e de focos de incêndio.
+\pagebreak
+
+## 1. Introdução
+A cultura da cana-de-açúcar possui função cada vez mais estratégica na economia do país devido ao interesse em conciliar as preocupações relacionadas ao meio ambiente e a utilização dos combustíveis fósseis, que considera o balanço do lançamento de carbono na atmosfera e seus danosos efeitos no aquecimento global. Assim, o segmento industrial brasileiro, quando produz o etanol, oferta para o mercado um combustível que não afeta a camada de ozônio e é obtido a partir de uma fonte renovável.
+
+Com propósito de redução da emissão de gases de efeito estufa (GEEs) na atmosfera, vem ocorrendo a eliminação gradativa do emprego de fogo para despalha da cana-de-açúcar, nas lavouras do estado de São Paulo. A mecanização da colheita sem queima prévia evita a emissão de gases de efeito estufa e beneficia o solo, pois deixa sobre ele a palha que antes era queimada, protegendo-o contra erosão e contribuindo para o aumento da sua fertilidade e teor de matéria orgânica (CONAB, 2019). Desde o início do Protocolo Agroambiental do Setor Sucroenergético em São Paulo, a colheita mecanizada ocorre, na maior parte das vezes, sem o uso da prática de queima das lavouras, com uma redução de mais de 90% da área de queima de cana-de-açúcar autorizada (Figura 1).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{percentual.png}
+\caption{Percentual de colheita manual e mecanizada em São Paulo de 2007 a 2018.}
+\end{figure}
+
+O mapeamento e monitoramento das lavouras de cana-de-açúcar, com e sem a prática da queima da palha, torna-se importante para avaliar a eficácia do protocolo de intenções que a Secretaria do Meio Ambiente do Estado de São Paulo (SMA-SP) e a União da Indústria de Cana-de-Açúcar (UNICA) assinaram, em junho de 2007.  Dessa forma, a utilização de dados de sensoriamento remoto é importante para um país com grandes dimensões continentais e diversidade de usos da terra. 
+NOVAES et al. (2011) e MELLO (2009) afirmam que técnicas de análise espacial com imagens de satélites são essenciais para o mapeamento e monitoramento da colheita da cana-de-açúcar com queima da palha. RUDORFF et al. (2010) e GONÇALVES et al. (2012a e 2012b) confirmaram que imagens de satélite são eficientes para auxiliar a avaliação de características importantes do cultivo da cana-de-açúcar, proporcionando resultados relevantes para o debate sobre a produção sustentável de etanol. ADAMI et al. (2012), avaliando a precisão do mapeamento temático da cana-de-açúcar por meio de imagens de satélites, chegaram a estimativas precisas das áreas de cana-de-açúcar para fins de estatísticas agrícolas para o monitoramento da expansão de cultura no país.
+
+Neste contexto, a utilização de imagens de satélites é viável devido à diversidade de sistemas sensores disponíveis atualmente, com as mais variadas resoluções e periodicidade adequadas para utilização em aplicações agrícolas, com baixo custo de aquisição e de processamento das imagens.  Existem vários satélites comerciais de observação da Terra de interesse da agricultura, com diferentes resoluções espaciais, temporais, espectrais e radiométricas. Dentre eles, destacam-se os de alta resolução espacial (Ikonos, Quick-Bird, Geoeye e Rapideye), os de média resolução espacial (Landsat, Spot e CBERS), e os de baixa resolução espacial, porém com alta periodicidade temporal (AVHRR/NOAA, MODIS, CBERS/WFI e GOES-16). As séries de satélites AVHRR/NOAA, MetOp e GOES, embora sejam destinadas primeiramente para fins meteorológicos, também são importantes na proposição de soluções inovadoras e tecnologicamente viáveis para auxiliar o monitoramento e previsão de safras nacionais, a partir do monitoramento regional da vegetação natural e de áreas agrícolas (GONÇALVES et al. 2013).
+
+O satélite meteorológico GOES-16 apresenta características que permitem sua utilização em estudos terrestres, com resolução espacial próxima de um quilômetro e disponibilidade de canais nas bandas correspondentes ao vermelho e infravermelho próximo, úteis em estudos de cobertura vegetal. Devido à sua alta resolução temporal e garantia de cobertura global, é elevada a possibilidade de obtenção de imagens em boas condições, isto é, com pouca nebulosidade e baixa inclinação de visada, ao longo do ciclo de desenvolvimento de uma cultura agrícola comercial.
+
+O GOES-16 possui muitas vantagens sobre os sistemas atuais, principalmente no que se refere à resolução temporal (uma imagem a cada 10 minutos) e à capacidade de geração de mais de 50 produtos que podem ser aplicados a várias áreas do conhecimento. Além da utilização para previsão e monitoramento do tempo e do clima, eles podem ser utilizados em várias aplicações ambientais, tais como, mapeamento da vegetação por índices de vegetação, detecção de incêndios, monitoramento da concentração de ozônio e medições de temperatura da superfície do mar. A utilização de séries temporais de imagens de índices de vegetação e detecção de incêndios pode ser de grande utilidade no desenvolvimento de métodos de monitoramento e mapeamento da colheita com queima e sem queima da cana-de-açúcar no país, pois são baseadas na detecção de mudanças do comportamento espaço-temporal.
+
+## 2. Objetivo Geral
+
+O projeto tem, como objetivo geral, monitorar a colheita de cana-de-açúcar da safra 2019/2020, por meio de imagens do satélite GOES-16, quantificando as áreas colhidas com e sem queima.
+
+## 3. Objetivos Específicos
+
+Os objetivos específicos são: i) Analisar a variação dos valores do NDVI da cana-de-açúcar no estado de São Paulo no período de colheita da cultura; ii) Selecionar as áreas colhidas de cana-de-açúcar e verificar se houve ou não colheita por queima; iii) Quantificar a área colhida de cana-de-açúcar por queima e não queima.
+
+## 4. Material e Métodos
+
+### 4.1. Geoprocessamento
+
+Para execução deste trabalho, serão utilizados dados oficiais de colheita da cana-de-açúcar no estado de São Paulo do IBGE, Conab e Única. Os dados adquiridos serão das áreas colhidas manualmente, com máquinas e com queima da safra 2019/2020. Os dados geoespaciais das áreas de plantio e colheita da cana-de-açúcar serão adquiridos no sistema Canasat/Inpe.
+
+A Figura 2 apresenta as áreas de plantio de cana-de-açúcar do estado de São Paulo que serão utilizadas para verificar a colheita com queima da cultura, utilizando as imagens do satélite GOES-16. Desta maneira, serão selecionadas imagens diárias do satélite GOES-16, recebidas e armazenadas no Cepagri/Unicamp. O processamento das imagens será feito utilizando as bandas 2 e 3 para o cálculo do NDVI diário e as bandas 2, 7, 14 e 15 para delimitar focos de incêndios nas áreas de plantio de cultura, no período de abril a setembro de 2019, que corresponde ao período de colheita da cultura.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{area_plantio.png}
+\caption{Área de plantio de cana-de-açúcar do estado de São Paulo.}
+\end{figure}
+
+O Índice de Vegetação da Diferença Normalizada (NDVI) é o mais estudado e utilizado, definido por ROUSE et al. (1973) e dado por
+
+$$ NDVI = \frac{\rho_{IV} - \rho_{V}}{\rho_{IV} + \rho_{V}} $$
+
+onde, $\rho_{IV}$ é o fator de refletância no infravermelho próximo $(0,7-1,1 \mu m)$ e $\rho_{V}$ no vermelho $(0,7-1,1 \mu m)$.
+
+Os valores do NDVI variam entre -1,0 e 1,0, sendo maior quanto maior for a diferença entre o fator de refletância no infravermelho próximo e no vermelho. Os valores próximos a zero correspondem a superfícies sem vegetação.
+
+As imagens de NDVI serão processadas diariamente para o acompanhamento da cultura, sendo que se houver variação significativa desse índice de um dia para outro, será inferido que houve colheita da cana-de-açúcar. Detectadas as áreas de colheita, as imagens de focos de incêndios serão processadas a cada hora para os dias em que houver variação do NDVI e verificadas a correlação entre as áreas colhidas e os focos de incêndios.
+
+### 4.2. Metodologia estatística
+
+Os dados de satélite podem ser modelados como séries temporais (observadas nas regiões de plantio a cada hora), espacialmente dependentes entre si. Seja, inicialmente, uma série individual correspondendo aos valores de intensidade de NDVI, denotada por \[\{Y_t\}_{t =1, 2, \ldots},\] em que $t$ corresponde à $t$-ésima hora de medição após um tempo inicial $t_0$. A série $Y_t$ pode ser modelada por um processo autoregressivo ou de média móvel (ARMA) (MORETTIN et al. 2006), ajustado por efeitos sazonais, como, por exemplo, a variação do dia para noite, mas, principalmente, incluindo um componente de ponto de mudança (AMINIKHANGHAHI e COOK 2017), em que o regime estacionário da série temporal é alterado por um fenômeno cujo tempo e mudança de intensidades são desconhecidos -- neste caso, a queimada. Por exemplo, um modelo $\text{ARMA}(p,q)$ incluindo $m$ possíveis pontos de mudança pode ser escrito como \[Y_t = \mu + \sum_{i=1}^m \alpha_i \mathbf{1}\{t > t_i\} + \sum_{r=1}^p \rho_r Y_{t-r} + \varepsilon_t + \sum_{j=1}^q \theta_j \varepsilon_{t-j},\] com $\sum_{i=1}^m \alpha_i = 0$, onde $\mu$ é a média do processo, $\alpha_i$ é o efeito do $i$-ésimo ponto de mudança no período $t_i$, $i = 1, \ldots, m$, e $Y_{t-r}$ corresponde ao índice NDVI medido em $r$ intervalos de tempo no passado. Nota-se que o exemplo não inclui um componente para remover sazonalidade e efeitos do dia e noite, por exemplo.
+
+O objetivo da modelagem é separar e identificar os efeitos da variabilidade de diversos componentes, inclusive o efeito da auto-correlação das séries. Entretanto, o interesse principal no modelo de pontos de mudança é identificar quantos pontos de mudança foram observados no histórico ($m$), em quais momentos ($t_1, t_2, \ldots, t_m$) e qual a mudança resultante ($\alpha_1, \ldots, \alpha_m$). Serão utilizadas ferramentas computacionais disponíveis para análise de pontos de mudança individuais, sob perspectivas Bayesianas (KILLICK et al. 2014).
+
+O segundo estágio da modelagem de pontos de mudança é considerar a informação espacial deles -- isto é, a configuração de queimadas em uma região, e como a informação de séries temporais vizinhas pode ser incorporada para melhorar a qualidade de predição dos pontos de mudança. Uma visão geral da estatística espacial e espaço-temporal pode ser encontrada em CRESSIE (1993) e CRESSIE et al. (2011).
+
+Na prática, a análise de séries temporais dependentes entre si é um problema bastante caro computacionalmente [@gamerman2010dynamic]. Uma estratégia comum é considerar o conjunto de pixels vizinhos como um processo Markoviano no reticulado, isto é, considerar a série temporal $Y_t$ também indexada por um ponto espacial $\mathbf{s}_0$ imerso no domínio com coordenadas normalizadas para coincidirem com o $\mathbb{Z}^2$ (denotada por $Y_{t, \mathbf{s}_0}$). Seja a vizinhança $\mathbf{s}_0$ definida como sendo o conjunto de pontos $V_0 = \{\mathbf{s} \in \mathbb{Z}^2 : 0 < \|\mathbf{s} - \mathbf{s}_0\|_1 \leq 1\}$. Um processo espaço-temporal condicionalmente auto-regressivo (CAR) é tal que $Y_{t, \mathbf{s}_0}$, dado $\{Y_{t, \mathbf{s}}\}_{\mathbf{s} \in V_0}$, é independente de $\{Y_{t, \mathbf{s}} \}_{\mathbf{s} \not\in V_0}$ [@besag1974spatial]. Naturalmente, determinar o que é uma vizinhança apropriada e qual o impacto da escolha da vizinhança na estimação de pontos de mudança é um problema em aberto, cuja investigação também será objetivo deste projeto de pesquisa.
+
+## 5. Cronograma de atividades 
+
+A Tabela 1 apresenta o cronograma das atividades que serão desenvolvidas no período de vigência do projeto, de 01 de agosto de 2019 a 31 de julho de 2020.
+
+\begin{table}[H]
+\centering
+\caption{Cronograma das atividades previstas}\label{Tab1}
+% definindo o tamanho da fonte para small
+% outros possíveis tamanhos: footnotesize, scriptsize
+\begin{small} 
+  
+% redefinindo o espaçamento das colunas
+\setlength{\tabcolsep}{3pt} 
+
+% \cline é semelhante ao \hline, porém é possível indicar as colunas que terão essa a linha horizontal
+% \multicolumn{10}{c|}{Meses} indica que dez colunas serão mescladas e a palavra Meses estará centralizada dentro delas.
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}\hline
+ & \multicolumn{12}{c|}{Meses}\\ \cline{2-13}
+\raisebox{1.5ex}{Etapa} & 01 & 02 & 03 & 04 & 05 & 06 & 07 & 08 & 09 & 10 & 11 & 12  \\ \hline
+1     & x & x & x &   &   &   &   &   &   & x  & x  & x  \\ \hline
+2     & x & x &   &   &   &   &   &   & x & x  &    &    \\ \hline
+3     & x & x & x &   &   &   &   &   &   &    &    &    \\ \hline
+4     &   &   &   & x & x & x & x &   &   &    &    &    \\ \hline
+5     &   &   &   &   &   &   & x &   &   &    &    &    \\ \hline
+6     &   &   &   &   &   &   & x & x & x & x  & x  &    \\ \hline
+7     &   &   &   &   &   &   &   &   &   & x  & x  &    \\ \hline
+8     &   &   &   &   &   &   &   &   &   &    & x  & x  \\ \hline
+\end{tabular} 
+\end{small}
+\label{t_cronograma}
+\end{table} 
+
+As etapas referentes ao desenvolvimento do projeto encontram-se a seguir:
+
+1. Revisão bibliográfica
+
+2. Coleta de dados de cana-de-açúcar colhida (máquina e queima)
+
+3. Coleta de imagens da época de colheita de cana-de-açúcar do satélite GOES-16
+
+4. Processamento das imagens de NDVI e de focos de incêndio
+
+5. Relatório parcial de atividades
+
+6. Análise estatística dos dados e imagens adquiridos nos itens anteriores
+
+7. Elaboração de artigo para o XXVII Congresso de Iniciação Científica da UNICAMP
+
+8. Relatório final de atividades
+\pagebreak
+
+## 6. Referências

@@ -1,0 +1,56 @@
+---
+title: "Focos de queimadas detectados pelo INPE"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+source("https://www.dropbox.com/s/xt8bipung6s2897/funcoes.R?dl=1")
+```
+
+## Séries temporais de pontos de queimada e vizinhos
+
+As séries a seguir foram geradas com os valores de NDVI e NBR máximos nos horários entre 9h - 11h e 13h - 15h de 2019.
+
+```{r, echo = F, warning=FALSE, message=FALSE}
+# focos de queimada de interesse
+focos <- readr::read_csv("../processamento/inpe_queimadas/focos_filtrados.csv") %>% 
+  dplyr::mutate(datahora = str_replace_all(datahora, pattern = "/", replacement = "-")) %>% 
+  dplyr::mutate(datahora = lubridate::as_datetime(datahora), plant = 1:16)
+
+# séries anuais de pontos de queimada e vizinhos
+dado <- read_csv("../../IC - dados/tidy_queimadas/queimadas_buffer.csv")
+
+# unir focos com dados de queima
+dado <- inner_join(dado, focos, by = c("plant"="plant"))
+dado <- rename(dado, "data_queima" = datahora)
+
+# horarios entre 9h e 11h e 13h e 15h
+temp1 <- dplyr::filter(dado, hora >= lubridate::hms("12:00:00"), hora <= lubridate::hms("14:00:00"))
+temp2 <- dplyr::filter(dado, hora >= lubridate::hms("16:00:00"), hora <= lubridate::hms("18:00:00"))
+
+# valor máximo por hora
+queima_max <- dplyr::bind_rows(temp1, temp2) %>% 
+  dplyr::mutate(hora = lubridate::hour(hora)) %>%
+  # naniar::replace_with_na(replace = list(pixel_01 >= 1, pixel_01 <= -1)) %>% # trocar valores fora de (-1, 1)
+  dplyr::filter(valor > -1, valor < 1) %>% 
+  dplyr::group_by(data, hora, pixel, municipio, plant, index) %>% 
+  dplyr::summarise(max = max(valor)) %>% 
+  tidyr::unite("data", c(data, hora), sep = ' ') %>% 
+  dplyr::mutate(data = lubridate::ymd_h(data)) %>% 
+  dplyr::arrange(data)
+
+```
+
+```{r, out.width="100%", out.height="100%"}
+ggplot(queima_max) + 
+  geom_line(aes(x = data, y = max)) + 
+  facet_wrap(~pixel + index, ncol = 2) +
+  facet_grid(rows = vars(municipio), 
+             scales = "free", space = "free", shrink = FALSE)+
+  ylab("Índice") + xlab("Data") + 
+  theme_linedraw()
+
+# Rscript -e "rmarkdown::render('queimadas.Rmd')"
+```
+

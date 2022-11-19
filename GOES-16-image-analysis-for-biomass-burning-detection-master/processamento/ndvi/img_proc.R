@@ -1,0 +1,40 @@
+library(tidyverse)
+library(raster)
+library(rgdal)
+library(rgeos)
+library(RColorBrewer)
+library(fields)
+library(maptools)
+library(SAScii)
+library(rio)
+library(RSAGA)
+library(PythonInR)
+
+library(tidyverse)
+path <- "/run/media/wesley/6CD80ADD0368A759/Cepagri/G16.SP_Bandas_2_3--L1B/"
+file <- file.path(path, "201907171450G16.SP_Bandas_2_3--L1B.pic.C02.txt")
+c02 <- read_csv(file, col_names =F, col_types = cols(.default = col_double(), X2110 = col_skip()))
+c02 <- array(c02)
+# c02 <- lapply(c02, as.numeric)
+
+file <- file.path(path, "201907171450G16.SP_Bandas_2_3--L1B.pic.C03.txt")
+c03 <- read_csv(file, col_names =F, col_types = cols(.default = col_double(), X2110 = col_skip()))
+c03 <- array(c03)
+# c03 <- lapply(c03, as.numeric)
+
+# df2 <- mutate_all(c02, function(x) as.numeric(as.character(x)))
+# df3 <- mutate_all(c03, function(x) as.numeric(as.character(x)))
+ndvi <- (c03 - c02)/(c03 + c02)
+
+library(plot.matrix)
+plot(ndvi)
+
+
+# f <- brick(file)
+# library(EBImage)
+# plot(c02)
+# hist(c02)
+# display(c02)
+# imageData(c02)
+# is.Image( as.array(c02) )
+# hist(c02)

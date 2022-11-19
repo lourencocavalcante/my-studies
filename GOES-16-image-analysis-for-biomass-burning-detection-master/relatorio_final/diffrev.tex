@@ -1,0 +1,767 @@
+\documentclass[11pt,brazil,]{article}
+%DIF LATEXDIFF DIFFERENCE FILE
+%DIF DEL relatorio_rev0_.tex            Mon Sep 14 00:27:20 2020
+%DIF ADD relatorio_rev_guilherme_.tex   Mon Sep 14 00:23:49 2020
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[left=2.3cm, right=2.3cm, top=2cm, bottom=2cm]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Uso de imagens de satélites para detecção de queimadas nas áreas canavieiras de São Paulo},
+            pdfauthor={Wesley R. da Silva Satelis;  Jurandir Zullo Jr., Renata R. V. Gonçalves e Guilherme V. N. Ludwig},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[shorthands=off,main=brazil]{babel}
+\else
+  \usepackage{polyglossia}
+  \setmainlanguage[]{brazil}
+\fi
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{\centering \LARGE Uso de imagens de satélites para detecção de queimadas
+nas áreas canavieiras de São Paulo}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{\normalsize Wesley R. da Silva Satelis \\ \centering \normalsize \textbf{Orientação:} Jurandir Zullo Jr., Renata
+R. V. Gonçalves e Guilherme V. N. Ludwig}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+    \date{}
+    \predate{}\postdate{}
+  
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\floatplacement{figure}{H}
+%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
+%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
+\RequirePackage[normalem]{ulem} %DIF PREAMBLE
+\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{BLUE}{rgb}{0,0,1} %DIF PREAMBLE
+\providecommand{\DIFaddtex}[1]{{\protect\color{blue}\uwave{#1}}} %DIF PREAMBLE
+\providecommand{\DIFdeltex}[1]{{\protect\color{red}\sout{#1}}}                      %DIF PREAMBLE
+%DIF SAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
+\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFdelbegin}{} %DIF PREAMBLE
+\providecommand{\DIFdelend}{} %DIF PREAMBLE
+%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelendFL}{} %DIF PREAMBLE
+%DIF HYPERREF PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFadd}[1]{\texorpdfstring{\DIFaddtex{#1}}{#1}} %DIF PREAMBLE
+\providecommand{\DIFdel}[1]{\texorpdfstring{\DIFdeltex{#1}}{}} %DIF PREAMBLE
+\newcommand{\DIFscaledelfig}{0.5}
+%DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
+\RequirePackage{settobox} %DIF PREAMBLE
+\RequirePackage{letltxmacro} %DIF PREAMBLE
+\newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
+\newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
+\newlength{\DIFdelgraphicsheight} %DIF PREAMBLE
+% store original definition of \includegraphics %DIF PREAMBLE
+\LetLtxMacro{\DIFOincludegraphics}{\includegraphics} %DIF PREAMBLE
+\newcommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
+\newcommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
+\sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
+\settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
+\parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
+\setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
+\begin{picture}(1,1)% %DIF PREAMBLE
+\thicklines\linethickness{2pt} %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\framebox(1,1){}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\line( 1,1){1}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,1){\line(1,-1){1}}}% %DIF PREAMBLE
+\end{picture}% %DIF PREAMBLE
+}\hspace*{3pt}}} %DIF PREAMBLE
+} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbegin}{\DIFaddbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddend}{\DIFaddend} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbegin}{\DIFdelbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelend}{\DIFdelend} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbegin}{\DIFOaddbegin \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbegin}{\DIFOdelbegin \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbeginFL}{\DIFaddbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddendFL}{\DIFaddendFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbeginFL}{\DIFdelbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelendFL}{\DIFdelendFL} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbeginFL}{\DIFOaddbeginFL \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbeginFL}{\DIFOdelbeginFL \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This is sample text for abstract. Generally speaking, I would like to
+show keywords list below an abstract (as in case of the linked example).
+
+\par
+
+\textbf{Palavras-chave:} séries temporais, sensoriamento remoto,
+goes-16, pontos de mudança, agricultura, protocolo ambiental
+\end{abstract}
+
+\renewcommand{\figurename}{Figura}
+\renewcommand{\tablename}{Tabela}
+\captionsetup[figure]{font=small}
+
+\hypertarget{introducao}{%
+\section{Introdução}\label{introducao}}
+
+A cultura da cana-de-açúcar possui função cada vez mais estratégica na
+\DIFdelbegin \DIFdel{econômia }\DIFdelend \DIFaddbegin \DIFadd{economia }\DIFaddend do país devido ao interesse em conciliar preocupações
+relacionadas ao meio ambiente e a utilização de combustíveis fósseis,
+que considera o balanço do lançamento de carbono na atmosfera e suas
+contribuições no aquecimento global.
+
+Com propósito de reduzir a emissão de gases de efeito estufa (GEEs) na
+atmosfera, vem ocorrendo a eliminação do emprego de fogo para despalha
+da cana-de-açúcar, nas lavouras do estado de São Paulo. A mecanização da
+colheita sem queima prévia evita a emissão de gases de efeito estufa e
+beneficia o solo, pois deixa sobre ele a palha que antes era queimada e
+o protege contra erosão, além de contribuir para o aumento de
+fertilidade e teor de matéria orgânica (Conab
+\protect\hyperlink{ref-conab}{2019}).
+
+O mapeamento e monitoramento das lavouras de cana-de-açúcar, com e sem
+pré-queima da palha, torna-se importante para avaliar a eficácia do
+protocolo de intenções assinado em junho de 2007 pela Secretaria do Meio
+Ambiente do Estado de São Paulo (SMA-SP) e a União da Indústria de
+Cana-de-Açúcar (UNICA).
+
+Novaes et al. (\protect\hyperlink{ref-protocloagro}{2011}) e Mello
+(\protect\hyperlink{ref-orbitainpe}{2009}) afirmam que técnicas de
+análise espacial de imagens de satélites são essenciais para o
+mapeamento e monitoramento da colheita da cana-de-açúcar com queima da
+palha. Rudorff et al. (\protect\hyperlink{ref-rudorff2010studies}{2010})
+e Gonçalves et al.~(2012a e 2012b) confirmaram que imagens de satélites
+são eficientes para auxiliar a avaliação de características importantes
+do cultivo da cana-de-açúcar, proporcionando resultados relevantes para
+o debate sobre a produção sustentável de etanol. (Adami et al.
+\protect\hyperlink{ref-sugarcanesouth}{2012}), avaliando a precisão do
+mapeamento temático da cana-de-açúcar por meio de imagens de satélites,
+chegaram a estimativas precisas das áreas de cana-de-açúcar para fins de
+estatísticas agrícolas empregradas no monitoramento da expansão de
+cultura no país.
+
+Este projeto de pesquisa faz uso das imagens do satélite meteorológico
+GOES-16 referentes ao estado de São Paulo, empregando técnicas de
+análise de pontos de mudança em séries temporais.
+
+As áreas de plantio serão modeladas como séries temporais espacialmente
+dependentes entre si, por um processo de média móvel (ARMA) (\DIFaddbegin \DIFadd{uma
+referência recente é }\DIFaddend Morettin e Toloi
+\protect\hyperlink{ref-morettin2006analise}{2006}), incluindo um
+componente de pontos de mudança (Aminikhanghahi e Cook
+\protect\hyperlink{ref-aminikhanghahi2017survey}{2017}). O interesse
+principal é identificar quantos pontos de mudança foram observados, em
+quais momentos e qual a mudança resultante e sugerir um método de
+detecção de áreas com queima de biomassa refente à cana-de-açúcar.
+
+\hypertarget{objetivos}{%
+\section{Objetivos}\label{objetivos}}
+
+\hypertarget{objetivo-geral}{%
+\subsection{Objetivo geral}\label{objetivo-geral}}
+
+O projeto tem, como objetivo geral, monitorar a colheita de
+cana-de-açúcar da safra 2019/2020, por meio de imagens do satélite
+GOES-16, quantificando as áreas colhidas com e sem queima.
+
+\hypertarget{objetivos-especificos}{%
+\subsection{Objetivos específicos}\label{objetivos-especificos}}
+
+Os objetivos específicos são: i) Analisar a variação dos valores do NDVI
+da cana-de-açúcar no estado de São Paulo no período de colheita da
+cultura; ii) Selecionar as áreas colhidas de cana-de-açúcar e verificar
+se houve ou não colheita por queima; iii) Quantificar a área colhida de
+cana-de-açúcar por queima e não queima.
+
+\hypertarget{materiais-e-metodos}{%
+\section{Materiais e métodos}\label{materiais-e-metodos}}
+
+\hypertarget{indices-de-vegetacao-e-queimada}{%
+\subsection{Índices de vegetação e
+queimada}\label{indices-de-vegetacao-e-queimada}}
+
+O espectro eletromagnético do GOES-16 é dividido em 16 intervalos, com
+comprimentos de onda classificados entre visível, infravermelho próximo
+e infra-vermelho. Neste projeto, estes intervalos serão denominados
+faixas e denotados por \(\rho\).
+
+Foram calculados índices de vegetação e queimada a fim de acompanhar a
+cultura de cana e avaliar áreas onde houve pré-queima, resultando em uma
+imagem completa do estado de São Paulo a cada faixa recebida do
+satélite. Para tal, foi utilizado o Índice de Vegetação por Diferença
+Normalizada (NDVI), definido por Rouse et al.
+(\protect\hyperlink{ref-rouse1974monitoring}{1974}) e calculado por
+\DIFdelbegin \DIFdel{,
+}\DIFdelend 
+
+\[ NDVI=\frac{\rho_{III} - \rho_{II}}{\rho_{III} + \rho_{II}}\DIFaddbegin \DIFadd{, }\DIFaddend \]
+
+em que \DIFdelbegin \DIFdel{, }\DIFdelend \(\rho_{III}\) é o fator de refletância no infravermelho próximo
+\((0,86 \mu m)\) e \(\rho_{II}\) no vermelho \((0,64 \mu m)\). Os
+valores no NDVI variam entre -1,0 e 1,0, sendo maior quanto maior for a
+diferença entre o fator de refletância no infravermelho próximo e no
+vermelho. Valores próximos a zero correspondem a superfícies sem
+vegetação.
+
+O Índice de Queima Normalizada (NBR) (García e Caselles
+\protect\hyperlink{ref-garcia1991mapping}{1991}), foi utilizado na
+avaliação de áreas de queimadas. Uma vez que ele evidencia cicatrizes em
+áreas de vegetação, ou seja áreas de vegetação onde houve queima de
+biomassa. O NBR é calculado por
+\DIFdelbegin \DIFdel{,
+}\DIFdelend 
+
+\[ NBR=\frac{\rho_{III} - \rho_{VI}}{\rho_{III} + \rho_{VI}}\DIFaddbegin \DIFadd{, }\DIFaddend \]
+
+em que \DIFdelbegin \DIFdel{, }\DIFdelend \(\rho_{VI}\) é o fator de refletância no infravermelho de onda
+curta \((2,24 \mu m)\) e \(\rho_{III}\) é o mesmo utilizado no cálculo
+de NDVI. Valores negativos ou relativamente próximos a zero corresponde
+a áreas com vegetação queimada.
+
+\hypertarget{extracao-de-dados-e-georeferenciamento}{%
+\subsection{Extração de dados e
+georeferenciamento}\label{extracao-de-dados-e-georeferenciamento}}
+
+Em 2018, com recursos da Financiadora de Estudos e Projetos (Finep), o
+Centro de Pesquisas Meteorológicas e Climáticas Aplicadas à Agricultura
+(CEPAGRI) adiquiriu e instalou um sistema de recepção e processamento de
+imagens do satélite meteorológico GOES-16.
+
+O sistema possui um software específico para o cálculo de índices a
+partir de diferentes faixas espectrais. Entretanto, buscando maior
+controle sobre a qualidade, os cálculos foram feitos diretamente com
+códigos implementados na linguagem de computação estatística, R. Assim,
+optou-se por fazer uso do software do sistema somente para recorte da
+área de interesse e seleção das faixas espectrais, minimizando o tamanho
+em disco e, consequentemente, tempo de processamento.
+
+Os scans recebidos abrangem todo o ocidente e o pré processamento tem o
+objetivo de extrair somente a região de estudo. O software do sistema de
+recepção retorna uma matriz para cada faixa espectral, compreendendo
+todo o estado de São Paulo e com resolução espacial de aproximandamente
+500 m por pixel.
+
+Os dados pré-processados estão dispostos em formato de texto sem
+qualquer referenciamento disponível. O georeferenciamento foi feito
+diretamente sobrepondo uma camada contendo as coordenadas que referencia
+os índices pelas fronteiras do estado e dá a cada pixel uma latitude e
+longitude.
+
+As localizações das cultura canavieiras utilizadas neste projeto provêm
+de um estudo feito por Aguiar et al.
+(\protect\hyperlink{ref-aguiar2011remote}{2011}) no Institudo Nacional
+de Pesquisas Espaciais (INPE), que também teve o objetivo de monitorar o
+cumprimento do protocolo ambiental no cultivo de cana-de-açúcar no
+estado de São Paulo. Além destas, foram extraídas localizações de focos
+de incêndio reportadas pelo programa de monitoramento de queimadas,
+também desenvolvido pelo INPE (Instituto Nacional de Pesquisas
+Espaciais, \protect\hyperlink{ref-inpe}{{[}s.d.{]}}), selecionando
+municípios com plantações de tamanho considerável de cana. As técnicas
+discutidas nas sessões a seguir serão aplicadas nestes pontos, a fim de
+criar um método rasoável de classificação de queimas em vegetação. Este
+conjunto de dados será denominado conjunto de testes.
+
+\hypertarget{reducao-de-efeitos-atmosfericos}{%
+\subsection{Redução de efeitos
+atmosféricos}\label{reducao-de-efeitos-atmosfericos}}
+
+Técnicas de redução de efeitos atmosféricos são encaradas neste estudo
+como métodos de processamento de sinais em séries temporais e objetivam
+minimizar ruídos causados por fatores externos, como contaminações por
+nuvens, \DIFdelbegin \DIFdel{âgulos }\DIFdelend \DIFaddbegin \DIFadd{ângulos }\DIFaddend de luz solar, efeitos de sombra, efeitos de aerosol e
+vapor de água e refletância direcional.
+
+O procedimento de Composição de Máximo Valor (MVC) (Holben
+\protect\hyperlink{ref-holben1986characteristics}{1986}), avalia valores
+em intervalos de tempo predeterminados e mantém os pixels com maior
+valor. Por fim, tem-se uma imagem resultante da combinação dos valores
+máximos de todas as imagens na janela de tempo fixado. Neste estudo,
+essa técnica foi aplicada às séries temporais com observações entre
+9h-11h e 13h-15h UTC−3 de cada dia. A escolha dos intervalos se dá pelo
+fato de a qualidade do resultado depender fortemente da quantidade de
+ruído presente no intervalo e ambos os índices apresentarem menor
+contaminção em horários ao redor do meio-dia. Vale ressaltar que esta
+técnica diminui consideravelmente a resolução temporal dos dados, indo
+de uma observação a cada 15 minutos para duas observações por dia e,
+consequentemente, reduz a possibilidade de detectar mudanças de curto
+prazo.
+
+Visando manter a resolução temporal, foi aplicado um filtro de \DIFdelbegin \DIFdel{madiana
+}\DIFdelend \DIFaddbegin \DIFadd{mediana
+}\DIFaddend adaptativo definido por Schettlinger, Fried, e Gather
+(\protect\hyperlink{ref-medianfilter}{2009}), em que o tamanho da janela
+é adapatado para os dados da janela atual por um teste de ajuste do
+sinal estimado mais recente, mantendo a mediana de cada janela móvel.
+
+O filtro \DIFdelbegin \DIFdel{aplica localmente o modelo
+,
+}\DIFdelend \DIFaddbegin \DIFadd{é construído localmente com base no modelo
+}\DIFaddend 
+
+\[Y_t = Y_{t-j} + (t-j)\beta + \epsilon_{j}, j = 1, 2, ..., n_t\DIFaddbegin \DIFadd{,}\DIFaddend \]
+
+isto é, \DIFdelbegin \DIFdel{incrementando na série }\DIFdelend \DIFaddbegin \DIFadd{em que as últimas \(n_t\) observações em um instante de tempo
+arbitrário \(t\) são incrementos lineares de }\DIFaddend \(\beta\) unidades \DIFdelbegin \DIFdel{a }\DIFdelend \DIFaddbegin \DIFadd{sobre
+valores anteriores, para }\DIFaddend cada uma unidade de tempo.
+\DIFdelbegin \DIFdel{\(n_t\) é variável.
+}\DIFdelend 
+
+Seja uma série definida em \DIFdelbegin \DIFdel{\(Y_1, Y_2, ..., Y_t\) no }\DIFdelend \DIFaddbegin \DIFadd{\(Y_1, Y_2, ..., Y_t.\) No }\DIFaddend \(t\)-ésimo
+instante, queremos encontrar o valor filtrado em \(Y_t\) dado por
+\(Y_t^{*}\). \DIFdelbegin \DIFdel{Fixa-se \(n_t\) e os dados passam a ser a janela
+}\DIFdelend \DIFaddbegin \DIFadd{Para um \(n_t,\) os dados que irão compor o valor filtrado
+são }\DIFaddend \(Y_t, Y_{t - 1}, ..., Y_{t - n_{t + 1}}\). Obtemos o estimador
+\(\hat{\beta} = Med_j\{Y_{t-j}, Y_{t-j-1}\}\), o incremento mediano
+sobre \(Y\) por uma unidade de tempo, para a janela de \(n_t\)
+observações. Assumimos que dentro da janela, a série está incrementando
+beta unidades por uma unidade de tempo e \(\hat{\beta}\) é um estimador
+robusto de beta.
+
+Como a série assume um efeito linear local, a mediana dos incrementos
+lineares das últimas \(n_t\) observações é uma previsão robusta do sinal
+de \(Y_t\), \(Y_t^{*} = Med_j\{Y_{t - j - 1} + (n-j)\beta\}\). \DIFaddbegin \DIFadd{A escolha
+de \(n_t\) é adaptativa e está descrita em Killick, Fearnhead, e Eckley
+(}\protect\hyperlink{ref-killick2012optimal}{2012}\DIFadd{).
+}\DIFaddend 
+
+A técnica foi aplicada \DIFdelbegin \DIFdel{independentemente do MVC, }\DIFdelend utilizando o pacote \DIFdelbegin \DIFdel{descrito em }\DIFdelend \DIFaddbegin \DIFadd{implementado por }\DIFaddend Fried,
+Schettlinger, e Borowski (\protect\hyperlink{ref-robfilter}{2019})\DIFaddbegin \DIFadd{, e
+será comparada ao MVC}\DIFaddend .
+
+\hypertarget{pontos-de-mudanca}{%
+\subsection{Pontos de mudança}\label{pontos-de-mudanca}}
+
+\DIFdelbegin \DIFdel{Neste trabalho de pesquisa a }\DIFdelend \DIFaddbegin \DIFadd{A }\DIFaddend identificação de pontos de mudança em séries temporais do NDVI e NBR
+\DIFdelbegin \DIFdel{, }\DIFdelend tem o objetivo específico de \DIFdelbegin \DIFdel{descriminar
+}\DIFdelend \DIFaddbegin \DIFadd{discriminar }\DIFaddend intervalos em que ocorrem
+mudanças nas propriedades estatísticas, \(\mu\) e \(\sigma\), causadas
+pela pré-queima da palha de cana-de-açúcar.
+
+Seja \(\{Y_{1, t}\}\) a série correspondente a um pixel do conjunto de
+testes, um ponto de mudança ocorre quando existe um tempo \(t_{\tau}\)
+\(\epsilon\) \(\{0, ..., t-1\}\) em que as propriedades estatísticas de
+\(\{y_{1, 0}, ..., y_{1, \tau}\}\) e
+\(\{y_{1, \tau+1}, ..., y_{1, t}\}\) se diferem de alguma forma. A
+detecção de um ponto de mudança pode ser encarada como um teste de
+hipóteses. A hipótese nula, \(H_0\), corresponde a nenhum ponto de
+mudança \((m=0)\) e a hipótese alternativa, \(H_1\), a um ponto de
+mudança \((m=1)\). \DIFaddbegin \DIFadd{Se rejeitamos a hipótese nula, o conjunto de dados é
+segmentado no ponto de mudança, e iteramos o procedimento, corrigindo os
+testes para evitar descobertas falsas.
+}\DIFaddend 
+
+A estatística associada ao teste de hipóteses proposto é de razão de
+verossimilhanças e faz uso da função de log-verossimilhança sob ambas
+hipóteses, \(H_0\) e \(H_1\). Sob a hipótese alternativa, considere um
+modelo com um ponto de mudança em \(t_{\tau}\), em que
+\(t_{\tau} \in {1, 2, ..., n-1}\). Assim, a função de
+log-verossimilhança é dada por,
+
+\[ML\left(\tau_{1}\right)=\log p\left(y_{1: \tau_{1}} \mid \hat{\theta}_{1}\right)+\log p\left(y_{\left(\tau_{1}+1\right): n} \mid \hat{\theta}_{2}\right).\]
+
+Levando em conta a natureza discreta da localização de pontos de
+mudança, o valor log-verossimilhança sob a hipótese alternativa é
+simplesmente \(\max_{\tau_{1}}ML\left(\tau_{1}\right)\), em que o valor
+máximo é tomado sobre todos os pontos de mudança possíveis. Assim, a
+estatística do teste é,
+
+\[\lambda=2\left[\max _{\tau_{1}} M L\left(\tau_{1}\right)-\log p\left(y_{1: n} \mid \hat{\theta}\right)\right].\]
+
+O teste envolve a escolha de um limite, \(c\), tal que a hipótese nula é
+rejeitada se \(\lambda > c\). Se rejeitamos a hipótese nula, ou seja,
+detectamos um ponto de mudança, então estimamos sua posição como
+\(\hat{\tau_{1}}\).
+
+O interesse principal é identificar quantos pontos de mudança foram
+observados no histórico (\(m\)), em quais momentos
+(\(t_1, t_2, \ldots, t_m\)) e qual a mudança resultante
+(\(\alpha_1, \ldots, \alpha_m\)) (Killick, Fearnhead, e Eckley
+\protect\hyperlink{ref-killick2012optimal}{2012}). \DIFdelbegin %DIFDELCMD < 
+
+%DIFDELCMD < %%%
+\DIFdelend A abordagem mais
+comum na detecção de múltiplos pontos de mudança na literatura é
+minimizando,
+
+\[\sum_{i=1}^{m+1}\left[\mathcal{C}\left(y_{\left(\tau_{i-1}+1\right): \tau_{i}}\right)\right]+\beta f(m)\]
+
+em que, \(\mathcal{C}\) é a função de custo para um segmento, por
+exemplo a função de log-verossimilhança e \(\beta f(m)\) uma função
+penalidade para prevenir sobreajustes, uma versão para múltiplos pontos
+de mudança do limite \(c\) citado anteriormente. Na prática, a escolha
+mais comum é uma que seja linear no número de pontos de mudança, isto é,
+\(\beta f(m) = \beta m\). Temos como exemplos comuns as penalidades
+\emph{Akaike's information crtierion} (AIC), em que \(\beta = 2p\) e
+\emph{Bayesian information criterion} (BIC), em que \(\beta = plog(n)\)
+com p sendo o número de parâmentros adicionais introduzidos pela adição
+de um ponto de mudança.
+
+O método de busca de pontos de mudança aplicado foi o de segmentação
+binária, empregado utilizando o pacote descrito por Killick e Eckley
+(\protect\hyperlink{ref-killick2014changepoint}{2014}). Em suma a
+segmentação binária torna qualquer método para um ponto de mudança em um
+de multiplos pontos, repetindo-se iterativamente em diferentes
+subconjuntos da série.
+
+Foram estimados pontos de mudança em média, \(\mu\), e variância,
+\(\sigma^2\), conjuntamente e apesar de terem sido estimadas mudanças em
+variância, estas serão referidas no decorrer deste texto na forma de
+desvio padrão \(\sqrt{\sigma^2}\) e denotadas por \(\sigma\).
+
+\hypertarget{resultados}{%
+\section{Resultados}\label{resultados}}
+
+Os índices de Vegetação por Diferença Normalizada e de Queima
+Normalizada calculados para todo o território de São Paulo estão
+representados na Figura \ref{indices}. Todas as imagens recebidas
+passaram pelo mesmo procedimento, possibilitando a obtenção das séries
+de qualquer pixel contido nas imagens.
+
+\begin{figure}[H]
+
+{\centering \DIFdelbeginFL %DIFDELCMD < \includegraphics{relatorio_rev0__files/figure-latex/unnamed-chunk-1-1} 
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics{relatorio_rev_guilherme__files/figure-latex/unnamed-chunk-1-1} 
+\DIFaddendFL 
+
+}
+
+\caption{\label{indices} Índice de Vegetação por Diferença Normalizada (NDVI) à esquerda e Índice de Queima Normalizada (NBR) à direita, georeferenciados pelas fronteiras do estado de São Paulo}\label{fig:unnamed-chunk-1}
+\end{figure}
+
+Nas Figuras \ref{mvc} e \ref{med}, as linhas pretas mostram os
+resultados das reduções de ruídos pelos métodos de composição de valor
+máximo e pelo filtro de mediana com janela móvel adaptativa,
+respectivamente. Como esperado, ambos estão dentro do intervalo teórico
+de (-1,0 e 1,0).
+
+A fidelidade do método redução de ruído pelo filtro de médiana
+mostrou-se eficiente, uma vez que se assemelha ao método mais fiel, de
+composição por valor máximo. Cumprindo com o objetivo de manter a
+resolução temporal original dos dados sem perda de fidelidade.
+
+Os segmentos em vermelho nas Figuras \ref{mvc} e \ref{med} representam
+os intervalos em que as médias e desvios padrões se diferem, ou seja,
+intervalos dos pontos de mudança detectados. A linha tracejada em
+laranja é hora exata em que a queimada foi detectada pelo sistema de
+monitoramento de queimadas do INPE.
+
+Nas Tabelas \ref{ndvi_mvc} e \ref{nbr_mvc} estão as estimativas das
+médias e desvios padrões, para cada segmento de mudança das séries
+resultantes por composição de valor máximo, bem como as datas e horas
+que formam os intervalos em que foram detectadas. Analogamente as
+Tabelas \ref{ndvi_med} e \ref{nbr_med} trazem a mesma informação para as
+séries resultantes do filtro de mediana com janela móvel adaptativa.
+
+\begin{figure}[H]
+
+{\centering \DIFdelbeginFL %DIFDELCMD < \includegraphics{relatorio_rev0__files/figure-latex/unnamed-chunk-2-1} 
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics{relatorio_rev_guilherme__files/figure-latex/unnamed-chunk-2-1} 
+\DIFaddendFL 
+
+}
+
+\caption{\label{mvc} Em vermelho, segmentos de mudança em média e desvio padrão detectados na série resultante da composição por valor máximo (MVC) de um pixel pertencente ao conjunto de testes do município de Sertãozinho. NDVI à esquerda e NBR à direita}\label{fig:unnamed-chunk-2}
+\end{figure}
+
+\begin{table}[t]
+
+\caption{\label{tab:unnamed-chunk-3}\label{ndvi_mvc}Estimativas de pontos de mudança para o Índice de vegetação (NDVI) tratado por MVC do município de Sertãozinho}
+\centering
+\begin{tabular}{cccc}
+\toprule
+Data de início & Data de fim & Média & Desvio padrão\\
+\midrule
+2019-01-01 12:00:00 & 2019-04-14 18:00:00 & 0.462 & 0.239\\
+2019-04-15 12:00:00 & 2019-07-14 17:00:00 & 0.530 & 0.148\\
+2019-07-14 18:00:00 & 2019-09-18 17:00:00 & 0.364 & 0.116\\
+2019-09-18 18:00:00 & 2019-11-15 18:00:00 & 0.249 & 0.119\\
+2019-11-16 12:00:00 & 2019-12-24 14:00:00 & 0.366 & 0.203\\
+2019-12-24 16:00:00 & 2019-12-31 18:00:00 & 0.708 & 0.029\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+
+\caption{\label{tab:unnamed-chunk-3}\label{nbr_mvc}Estimativas de pontos de mudança para o Índice de queimada (NBR) tratado por MVC do município de Sertãozinho}
+\centering
+\begin{tabular}{cccc}
+\toprule
+Data de início & Data de fim & Média & Desvio padrão\\
+\midrule
+2019-01-01 12:00:00 & 2019-05-31 14:00:00 & 0.534 & 0.128\\
+2019-05-31 16:00:00 & 2019-07-25 12:00:00 & 0.488 & 0.079\\
+2019-07-25 13:00:00 & 2019-08-19 12:00:00 & 0.369 & 0.087\\
+2019-08-19 13:00:00 & 2019-11-13 12:00:00 & 0.271 & 0.106\\
+2019-11-13 13:00:00 & 2019-12-24 14:00:00 & 0.452 & 0.086\\
+2019-12-24 16:00:00 & 2019-12-31 18:00:00 & 0.674 & 0.035\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+
+{\centering \DIFdelbeginFL %DIFDELCMD < \includegraphics{relatorio_rev0__files/figure-latex/unnamed-chunk-4-1} 
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics{relatorio_rev_guilherme__files/figure-latex/unnamed-chunk-4-1} 
+\DIFaddendFL 
+
+}
+
+\caption{\label{med} Em vermelho, segmentos de mudança em média e desvio padrão detectados na série resultante do filtro por mediana de um pixel pertencente ao conjunto de testes do município de Sertãozinho. NDVI à esquerda e NBR à direita}\label{fig:unnamed-chunk-4}
+\end{figure}
+
+\begin{table}[t]
+
+\caption{\label{tab:unnamed-chunk-5}\label{ndvi_med}Estimativas de pontos de mudança para o Índice de vegetação (NDVI) tratado pelo filtro de mediana móvel do município de Sertãozinho}
+\centering
+\begin{tabular}{cccc}
+\toprule
+Data de início & Data de fim & Média & Desvio padrão\\
+\midrule
+2019-01-01 11:00:00 & 2019-07-06 14:20:00 & 0.462 & 0.239\\
+2019-07-06 14:30:00 & 2019-07-14 19:50:00 & 0.530 & 0.148\\
+2019-07-14 20:00:00 & 2019-09-18 19:30:00 & 0.364 & 0.116\\
+2019-09-18 19:40:00 & 2019-10-23 12:40:00 & 0.249 & 0.119\\
+2019-10-23 12:50:00 & 2019-12-24 14:30:00 & 0.366 & 0.203\\
+2019-12-24 14:40:00 & 2019-12-31 21:00:00 & 0.708 & 0.029\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+
+\caption{\label{tab:unnamed-chunk-5}\label{nbr_med}Estimativas de pontos de mudança para o Índice de queimada (NBR) tratado pelo filtro de mediana móvel do município de Sertãozinho}
+\centering
+\begin{tabular}{cccc}
+\toprule
+Data de início & Data de fim & Média & Desvio padrão\\
+\midrule
+2019-01-01 11:00:00 & 2019-07-25 13:00:00 & 0.534 & 0.128\\
+2019-07-25 13:10:00 & 2019-08-19 13:10:00 & 0.488 & 0.079\\
+2019-08-19 13:20:00 & 2019-10-27 20:20:00 & 0.369 & 0.087\\
+2019-10-27 20:30:00 & 2019-11-15 13:20:00 & 0.271 & 0.106\\
+2019-11-15 13:30:00 & 2019-12-24 16:20:00 & 0.452 & 0.086\\
+2019-12-24 16:30:00 & 2019-12-31 21:00:00 & 0.674 & 0.035\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\hypertarget{discussao}{%
+\section{Discussão}\label{discussao}}
+
+\newpage
+
+\hypertarget{referencias}{%
+\section*{Referências}\label{referencias}}
+\addcontentsline{toc}{section}{Referências}
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-sugarcanesouth}{}%
+Adami, M., M. P. Mello, D. A. Aguiar, B. F. T. Rudorff, e A. F. Souza.
+2012. ``A web platform development to perform thematic accuracy
+assessment of sugarcane mapping in South-Central Brazil''. \emph{Remote
+Sensing} 4 (10): 3201--14.
+
+\leavevmode\hypertarget{ref-aguiar2011remote}{}%
+Aguiar, D. A., B. F. T. Rudorff, W. F. Silva, M. Adami, e M. P. Mello.
+2011. ``Remote sensing images in support of environmental protocol:
+Monitoring the sugarcane harvest in São Paulo State, Brazil''.
+\emph{Remote Sensing} 3 (12): 2682--2703.
+
+\leavevmode\hypertarget{ref-aminikhanghahi2017survey}{}%
+Aminikhanghahi, S., e D. J. Cook. 2017. ``A survey of methods for time
+series change point detection''. \emph{Knowledge and information
+systems} 51 (2): 339--67.
+
+\leavevmode\hypertarget{ref-conab}{}%
+Conab. 2019. ``Cana-de-açúcar: Acompanhamento da safra brasileira:
+Cana-de-açúcar -- Safra 2018/19 - Terceiro levantamento''.
+\url{www.conab.gov.br/info-agro/safras/cana}.
+
+\leavevmode\hypertarget{ref-robfilter}{}%
+Fried, Roland, Karen Schettlinger, e Matthias Borowski. 2019.
+\emph{robfilter: Robust Time Series Filters}.
+\url{https://CRAN.R-project.org/package=robfilter}.
+
+\leavevmode\hypertarget{ref-garcia1991mapping}{}%
+García, M. J. L., e V. Caselles. 1991. ``Mapping burns and natural
+reforestation using Thematic Mapper data''. \emph{Geocarto
+International} 6 (1): 31--37.
+
+\leavevmode\hypertarget{ref-gonccalves2012relaccao}{}%
+Gonçalves, R. R. V., J. Zullo, P. P. Coltri, A. M. H. Avila, B. F.
+Amaral, E. B. M. de Sousa, e L. A. S. Romani. 2012. ``Relação entre o
+índice EVI e dados de precipitação nas áreas de plantio de
+cana-de-açúcar na região central do Brasil.'' 4º Simpósio de
+Geotecnologias no Pantanal - Geopantanal, Bonito, MS.: 2012b, Anais -
+Geopantanal.
+
+\leavevmode\hypertarget{ref-gonccalves2012evi}{}%
+Gonçalves, R. R. V., J. Zullo, P. P. Coltri, e L. A. S. Romani. 2012.
+``Evi's estimation to improve the monitoring of sugarcane using TRMM
+satellite data''. In \emph{2012 IEEE International Geoscience and Remote
+Sensing Symposium}, 6609--12. 2012a, IEEE.
+
+\leavevmode\hypertarget{ref-holben1986characteristics}{}%
+Holben, B. N. 1986. ``Characteristics of maximum-value composite images
+from temporal AVHRR data''. \emph{International journal of remote
+sensing} 7 (11): 1417--34.
+
+\leavevmode\hypertarget{ref-inpe}{}%
+Instituto Nacional de Pesquisas Espaciais, INPE --. {[}s.d.{]}. ``Portal
+do Monitoramento de Queimadas e Incêndios Florestais''.
+\url{http://queimadas.dgi.inpe.br/queimadas/portal}.
+
+\leavevmode\hypertarget{ref-killick2014changepoint}{}%
+Killick, R, e I Eckley. 2014. ``changepoint: An R package for
+changepoint analysis''. \emph{Journal of statistical software} 58 (3):
+1--19.
+
+\leavevmode\hypertarget{ref-killick2012optimal}{}%
+Killick, R., P. Fearnhead, e I. A. Eckley. 2012. ``Optimal detection of
+changepoints with a linear computational cost''. \emph{Journal of the
+American Statistical Association} 107 (500): 1590--8.
+
+\leavevmode\hypertarget{ref-orbitainpe}{}%
+Mello, M. P. 2009. ``Classificação espectro-temporal de imagens orbitais
+para o mapeamento da colheita da cana-de-açúcar com queima da palha''.
+Tese de doutorado, São José dos Campos, INPE.: MS dissertation, Nat.
+Inst. Space Res., São José dos Campos, Brazil; Anais - SBSR.
+
+\leavevmode\hypertarget{ref-morettin2006analise}{}%
+Morettin, P. A., e C. M. Toloi. 2006. ``Análise de séries temporais''.
+\emph{ABE--Projeto Fisher, Editora Edgar Blücher}.
+
+\leavevmode\hypertarget{ref-protocloagro}{}%
+Novaes, M. R. de, B. F. T. Rudorff, C. M. de Almeida, e D. A. de Aguiar.
+2011. ``Análise espacial da redução da queima na colheita da
+cana-de-açúcar: perspectivas futuras ao cumprimento do protocolo
+agroambiental.'' 31 (3).
+
+\leavevmode\hypertarget{ref-rouse1974monitoring}{}%
+Rouse, J. W., R. H. Haas, J. A. Schell, e D. W. Deering. 1974.
+``Monitoring vegetation systems in the Great Plains with ERTS''.
+\emph{NASA special publication} 351: 309.
+
+\leavevmode\hypertarget{ref-rudorff2010studies}{}%
+Rudorff, B. F. T., D. A. de Aguiar, W. F. Silva, L. M. Sugawara, M.
+Adami, e M. A. Moreira. 2010. ``Studies on the rapid expansion of
+sugarcane for ethanol production in São Paulo State (Brazil) using
+Landsat data''. \emph{Remote sensing} 2 (4): 1057--76.
+
+\leavevmode\hypertarget{ref-medianfilter}{}%
+Schettlinger, K., Roland Fried, e U. Gather. 2009. ``Real‐time signal
+processing by adaptive repeated median filters''. \emph{International
+Journal of Adaptive Control and Signal Processing} 24 (novembro):
+346--62. \url{https://doi.org/10.1002/acs.1105}.
+
+
+\end{document}
