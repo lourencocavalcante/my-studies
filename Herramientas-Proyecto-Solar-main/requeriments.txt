@@ -1,0 +1,8 @@
+numpy
+pandas
+s3fs
+netCDF4
+pyproj
+h5py
+scipy
+matplotlib
